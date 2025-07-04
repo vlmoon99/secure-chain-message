@@ -9,7 +9,7 @@ interface WalletConnectionProps {
   onUserChange: (user: User | null) => void;
 }
 
-const selector = new WalletSelector({ network: "mainnet" });
+const selector = new WalletSelector({ network: "testnet" });
 const modal = new WalletSelectorUI(selector);
 
 export const WalletConnection: React.FC<WalletConnectionProps> = ({ user, onUserChange }) => {
