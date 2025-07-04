@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Send, Copy, Check, Shield, Hash } from 'lucide-react';
-import { NearService } from '../services/nearService';
 import type { User } from '../types';
 
 interface CreateMessageProps {
@@ -22,12 +21,7 @@ export const CreateMessage: React.FC<CreateMessageProps> = ({ user }) => {
 
     setIsCreating(true);
     try {
-      const response = await NearService.createMessage({
-        content: message,
-        author: user.accountId
-      });
-      
-      setResult(response);
+      setResult(null);
       setMessage('');
     } catch (error) {
       console.error('Failed to create message:', error);

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Eye, Lock, Calendar, User as UserIcon } from 'lucide-react';
-import { NearService } from '../services/nearService';
 
 export const ReadMessage: React.FC = () => {
   const [code, setCode] = useState('');
@@ -19,8 +18,8 @@ export const ReadMessage: React.FC = () => {
     setError(null);
     
     try {
-      const response = await NearService.readMessage(code);
-      setResult(response);
+      // const response = await NearService.readMessage(code);
+      setResult(null);
     } catch (err) {
       setError((err as Error).message);
     } finally {
