@@ -2,11 +2,8 @@ import React, { useState } from 'react';
 import { Send, Copy, Check, Shield, Hash } from 'lucide-react';
 import type { User } from '../types';
 
-interface CreateMessageProps {
-  user: User;
-}
 
-export const CreateMessage: React.FC<CreateMessageProps> = ({ user }) => {
+export const CreateMessage: React.FC = () => {
   const [message, setMessage] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   const [result, setResult] = useState<{

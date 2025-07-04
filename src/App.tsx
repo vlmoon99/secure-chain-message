@@ -65,7 +65,7 @@ function App() {
             {/* Tab Content */}
             <div className="min-h-[400px]">
               {activeTab === 'create' ? (
-                <CreateMessage user={user} />
+                <CreateMessage />
               ) : (
                 <ReadMessage />
               )}
