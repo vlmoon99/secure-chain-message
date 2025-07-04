@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Shield, Github, Code, BookOpen } from 'lucide-react';
 import { WalletConnection } from './components/WalletConnection';
 import { CreateMessage } from './components/CreateMessage';
 import { ReadMessage } from './components/ReadMessage';
 import type { User } from './types';
+import { CryptoService } from './services/cryptoService';
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
   const [activeTab, setActiveTab] = useState<'create' | 'read'>('create');
+
+  useEffect(() => {
+    CryptoService.init();
+    console.log('CryptoService initialized');
+  },[]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">

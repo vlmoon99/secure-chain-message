@@ -28,5 +28,4 @@ export interface ReadMessageRequest {
 export interface EncryptedMessage {
   content: string;
   publicKey: string;
-  nonce: string;
 }

@@ -1,13 +1,11 @@
 import type { Message, CreateMessageRequest, User } from '../types';
 import { CryptoService } from './cryptoService';
 
-// Mock Near blockchain service - replace with actual Near API calls
 export class NearService {
   private static messages: Map<string, Message> = new Map();
   private static currentUser: User | null = null;
 
   static async connectWallet(): Promise<User> {
-    // Mock wallet connection - replace with actual Near wallet selector
     return new Promise((resolve) => {
       setTimeout(() => {
         const user: User = {
@@ -42,10 +40,8 @@ export class NearService {
       setTimeout(() => {
         const messageId = CryptoService.generateRandomId();
         
-        // Encrypt the message
         const { encryptedMessage, keyPair } = CryptoService.encrypt(request.content);
         
-        // Create message object
         const message: Message = {
           id: messageId,
           encryptedContent: JSON.stringify(encryptedMessage),
@@ -53,14 +49,12 @@ export class NearService {
           author: request.author
         };
         
-        // Store in mock blockchain
         this.messages.set(messageId, message);
         
-        // Create access code
         const messageCode = {
           messageId,
-          privateKey: Array.from(keyPair.secretKey).join(','),
-          publicKey: Array.from(keyPair.publicKey).join(',')
+          privateKey: keyPair.private_key,
+          publicKey: keyPair.public_key
         };
         
         const encodedCode = CryptoService.encodeMessageCode(messageCode);
@@ -82,10 +76,8 @@ export class NearService {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         try {
-          // Decode the message code
           const messageCode = CryptoService.decodeMessageCode(encodedCode);
           
-          // Get message from mock blockchain
           const encryptedMessage = this.messages.get(messageCode.messageId);
           
           if (!encryptedMessage) {
@@ -93,11 +85,9 @@ export class NearService {
             return;
           }
           
-          // Decrypt the message
           const encrypted = JSON.parse(encryptedMessage.encryptedContent);
-          const privateKey = new Uint8Array(messageCode.privateKey.split(',').map(Number));
           
-          const decryptedContent = CryptoService.decrypt(encrypted, privateKey);
+          const decryptedContent = CryptoService.decrypt(encrypted, messageCode.privateKey);
           
           resolve({
             message: decryptedContent,
