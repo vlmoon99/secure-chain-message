@@ -35,82 +35,42 @@ function App() {
 
         {/* Main Content */}
         <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {!user ? (
-            <div className="text-center py-16">
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-800/50 rounded-full mb-6">
-                <Shield className="h-10 w-10 text-blue-400" />
-              </div>
-              <h2 className="text-3xl font-bold text-white mb-4">
-                Welcome to SecureChain Messages
-              </h2>
-              <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
-                A demonstration of secure blockchain storage for encrypted messages. 
-                Built for Go developers to understand decentralized data storage patterns.
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto mb-8">
-                <div className="bg-gray-800/30 backdrop-blur-sm rounded-lg p-6 border border-gray-700">
-                  <Code className="h-8 w-8 text-blue-400 mb-3" />
-                  <h3 className="text-lg font-semibold text-white mb-2">Asymmetric Encryption</h3>
-                  <p className="text-sm text-gray-300">Messages are encrypted using public-key cryptography</p>
-                </div>
-                <div className="bg-gray-800/30 backdrop-blur-sm rounded-lg p-6 border border-gray-700">
-                  <Shield className="h-8 w-8 text-purple-400 mb-3" />
-                  <h3 className="text-lg font-semibold text-white mb-2">Blockchain Storage</h3>
-                  <p className="text-sm text-gray-300">Encrypted data is stored securely on Near blockchain</p>
-                </div>
-                <div className="bg-gray-800/30 backdrop-blur-sm rounded-lg p-6 border border-gray-700">
-                  <BookOpen className="h-8 w-8 text-green-400 mb-3" />
-                  <h3 className="text-lg font-semibold text-white mb-2">Educational Example</h3>
-                  <p className="text-sm text-gray-300">Clean, readable code for learning blockchain patterns</p>
-                </div>
-              </div>
-              <div className="bg-gray-800/30 backdrop-blur-sm rounded-lg p-6 border border-gray-700 max-w-2xl mx-auto">
-                <h3 className="text-lg font-semibold text-white mb-2">Get Started</h3>
-                <p className="text-gray-300 mb-4">Connect your Near wallet to begin creating and reading secure messages</p>
-                <p className="text-sm text-gray-400">
-                  This is a demonstration with mocked blockchain calls. 
-                  Real smart contract integration can be added later.
-                </p>
+          <div className="space-y-8">
+            {/* Tab Navigation */}
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-2 border border-gray-700">
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => setActiveTab('create')}
+                  className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
+                    activeTab === 'create'
+                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                      : 'text-gray-300 hover:text-white hover:bg-gray-700/50'
+                  }`}
+                >
+                  Create Message
+                </button>
+                <button
+                  onClick={() => setActiveTab('read')}
+                  className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
+                    activeTab === 'read'
+                      ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg'
+                      : 'text-gray-300 hover:text-white hover:bg-gray-700/50'
+                  }`}
+                >
+                  Read Message
+                </button>
               </div>
             </div>
-          ) : (
-            <div className="space-y-8">
-              {/* Tab Navigation */}
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-2 border border-gray-700">
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => setActiveTab('create')}
-                    className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
-                      activeTab === 'create'
-                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
-                        : 'text-gray-300 hover:text-white hover:bg-gray-700/50'
-                    }`}
-                  >
-                    Create Message
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('read')}
-                    className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
-                      activeTab === 'read'
-                        ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg'
-                        : 'text-gray-300 hover:text-white hover:bg-gray-700/50'
-                    }`}
-                  >
-                    Read Message
-                  </button>
-                </div>
-              </div>
 
-              {/* Tab Content */}
-              <div className="min-h-[400px]">
-                {activeTab === 'create' ? (
-                  <CreateMessage user={user} />
-                ) : (
-                  <ReadMessage />
-                )}
-              </div>
+            {/* Tab Content */}
+            <div className="min-h-[400px]">
+              {activeTab === 'create' ? (
+                <CreateMessage user={user} />
+              ) : (
+                <ReadMessage />
+              )}
             </div>
-          )}
+          </div>
         </main>
 
         {/* Footer */}
