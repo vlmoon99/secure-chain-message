@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Send, Copy, Check, Shield } from 'lucide-react';
+import { Send, Copy, Check, Shield, BedSingle } from 'lucide-react';
 import { NearWallet } from '@hot-labs/near-connect';
 import { encrypt_message, generate_keypair, KeyPair } from "../encryption/cryptography_project.js";
+import bs58 from 'bs58';
 
 interface CreateMessageProps {
   wallet: NearWallet | null;
@@ -10,7 +11,7 @@ interface CreateMessageProps {
 export const CreateMessage: React.FC<CreateMessageProps> = ({ wallet }) => {
   const [message, setMessage] = useState('');
   const [isCreating, setIsCreating] = useState(false);
-  const [result, setResult] = useState<{ key: string; encodedText: string; transactionHash: string } | null>(null);
+  const [result, setResult] = useState<{ encodedText: string; transactionHash: string } | null>(null);
   const [copied, setCopied] = useState<{ tx: boolean; code: boolean }>({ tx: false, code: false });
 
   const handleCreateMessage = async () => {
@@ -34,9 +35,10 @@ export const CreateMessage: React.FC<CreateMessageProps> = ({ wallet }) => {
         }],
       });
       if (res) {
+        const data = JSON.stringify({ public_key : keyPair.public_key, private_key: keyPair.private_key });
+        let msgEncoded = bs58.encode(new TextEncoder().encode(data));
         setResult({
-          key: keyPair.public_key,
-          encodedText: encrypted,
+          encodedText: msgEncoded,
           transactionHash: res[0].transaction.hash,
         });
       }

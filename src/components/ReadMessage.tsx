@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Eye, Lock, Calendar, User as UserIcon } from 'lucide-react';
 import { NearWallet } from '@hot-labs/near-connect';
+import { decodeBase64, encodeUTF8 } from 'tweetnacl-util';
+import { decrypt_message } from "../encryption/cryptography_project.js";
+import bs58 from 'bs58';
 
 interface ReadMessageProps {
   wallet: NearWallet | null;
@@ -9,11 +12,8 @@ interface ReadMessageProps {
 export const ReadMessage: React.FC<ReadMessageProps> = ({wallet}) => {
   const [code, setCode] = useState('');
   const [isReading, setIsReading] = useState(false);
-  const [result, setResult] = useState<{
-    message: string;
-    author: string;
-    timestamp: number;
-  } | null>(null);
+
+  const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const handleReadMessage = async () => {
@@ -21,10 +21,41 @@ export const ReadMessage: React.FC<ReadMessageProps> = ({wallet}) => {
 
     setIsReading(true);
     setError(null);
-    
+    const json = new TextDecoder().decode(bs58.decode(code));
+    let {public_key,private_key} = JSON.parse(json);
+
+    if (!public_key || !private_key) {
+      setError('Invalid decryption code format');
+      setIsReading(false);
+      return;
+    }
+    console.log("Public Key:", public_key);
+    console.log("Private Key:", private_key);
+
     try {
-      // const response = await NearService.readMessage(code);
-      setResult(null);
+      const res = await wallet?.signAndSendTransactions({
+        transactions: [{
+          receiverId: "securechainmsg.near",
+          actions: [{
+            type: "FunctionCall",
+            params: {
+              methodName: "GetMsg",
+              args: { key: public_key},
+              gas: "30000000000000",
+              deposit: "00000000000001",
+            },
+          }],
+        }],
+        });
+        
+        console.log(res);
+
+        if(res){
+          let base64Msg = res[0].status.SuccessValue;
+          let binaryStr = atob(base64Msg).slice(4);
+          let decryptedResult = decrypt_message(private_key, binaryStr);
+          setResult(decryptedResult);
+      }
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -36,10 +67,6 @@ export const ReadMessage: React.FC<ReadMessageProps> = ({wallet}) => {
     setResult(null);
     setCode('');
     setError(null);
-  };
-
-  const formatDate = (timestamp: number) => {
-    return new Date(timestamp).toLocaleString();
   };
 
   if (result) {
@@ -59,25 +86,7 @@ export const ReadMessage: React.FC<ReadMessageProps> = ({wallet}) => {
               <Lock className="h-5 w-5 text-green-400" />
               <span className="text-sm font-medium text-gray-300">Decrypted Message</span>
             </div>
-            <p className="text-white text-lg leading-relaxed">{result.message}</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-gray-900/50 rounded-lg p-4">
-              <div className="flex items-center space-x-2 mb-2">
-                <UserIcon className="h-4 w-4 text-blue-400" />
-                <span className="text-sm font-medium text-gray-300">Author</span>
-              </div>
-              <code className="text-sm text-blue-200 font-mono break-all">{result.author}</code>
-            </div>
-
-            <div className="bg-gray-900/50 rounded-lg p-4">
-              <div className="flex items-center space-x-2 mb-2">
-                <Calendar className="h-4 w-4 text-purple-400" />
-                <span className="text-sm font-medium text-gray-300">Created</span>
-              </div>
-              <span className="text-sm text-purple-200">{formatDate(result.timestamp)}</span>
-            </div>
+            <p className="text-white text-lg leading-relaxed">{result}</p>
           </div>
         </div>
 
