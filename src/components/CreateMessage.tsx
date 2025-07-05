@@ -22,8 +22,10 @@ export const CreateMessage: React.FC<CreateMessageProps> = ({wallet}) => {
     transactionHash: string;
   } | null>(null);
   const [copiedStates, setCopiedStates] = useState<{
+    transactionHash: boolean;
     decryptionCode: boolean;
   }>({
+    transactionHash: false,
     decryptionCode: false,
   });
 
@@ -64,7 +66,7 @@ export const CreateMessage: React.FC<CreateMessageProps> = ({wallet}) => {
     }
   };
 
-  const handleCopy = async (text: string, type: 'decryptionCode') => {
+  const handleCopy = async (text: string, type: 'transactionHash' | 'decryptionCode') => {
     await navigator.clipboard.writeText(text);
     setCopiedStates(prev => ({ ...prev, [type]: true }));
     setTimeout(() => {
@@ -76,6 +78,7 @@ export const CreateMessage: React.FC<CreateMessageProps> = ({wallet}) => {
     setResult(null);
     setMessage('');
     setCopiedStates({
+      transactionHash: false,
       decryptionCode: false,
     });
   };
@@ -90,6 +93,23 @@ export const CreateMessage: React.FC<CreateMessageProps> = ({wallet}) => {
           <h3 className="text-2xl font-bold text-white mb-2">Message Created Successfully!</h3>
           <p className="text-gray-300">Share this code with the recipient to decrypt your message</p>
         </div>
+          <div className="bg-gray-900/50 rounded-lg p-4">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center space-x-2">
+                <Shield className="h-4 w-4 text-purple-400" />
+                <span className="text-sm font-medium text-gray-300">Transaction Hash</span>
+              </div>
+              <button
+                onClick={() => handleCopy(result.transactionHash, 'transactionHash')}
+                className="flex items-center space-x-1 px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors"
+              >
+                {copiedStates.transactionHash ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                <span>{copiedStates.transactionHash ? 'Copied!' : 'Copy'}</span>
+              </button>
+            </div>
+            <code className="text-xs text-gray-400 font-mono break-all">{result.transactionHash}</code>
+          </div>
+
           <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-lg p-4 border border-blue-500/20">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-white">Deployed Secure Message</span>
