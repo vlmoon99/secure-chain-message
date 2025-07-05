@@ -2,7 +2,6 @@ import { randomBytes } from 'tweetnacl';
 import { encodeUTF8, encodeBase64 } from 'tweetnacl-util';
 import bs58 from 'bs58';
 import type { MessageCode, EncryptedMessage } from '../types';
-// import { encrypt_message,decrypt_message,generate_keypair, KeyPair } from '../encryption/cryptography_project';
 import initSync, {
     decrypt_message,
     encrypt_message,

@@ -1,12 +1,15 @@
 import { useState } from 'react';
-import { Shield, Github, Code, BookOpen } from 'lucide-react';
+import { Shield, Github } from 'lucide-react';
 import { WalletConnection } from './components/WalletConnection';
 import { CreateMessage } from './components/CreateMessage';
 import { ReadMessage } from './components/ReadMessage';
 import type { User } from './types';
+import { NearWallet } from '@hot-labs/near-connect';
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
+  const [wallet, setWallet] = useState<NearWallet | null>(null);
+
   const [activeTab, setActiveTab] = useState<'create' | 'read'>('create');
 
   return (
@@ -28,7 +31,7 @@ function App() {
                   <p className="text-xs text-gray-400">Blockchain-based secure messaging</p>
                 </div>
               </div>
-              <WalletConnection user={user} onUserChange={setUser} />
+              <WalletConnection user={user} onUserChange={setUser} wallet={wallet} onWalletChange={setWallet} />
             </div>
           </div>
         </header>
@@ -65,9 +68,9 @@ function App() {
             {/* Tab Content */}
             <div className="min-h-[400px]">
               {activeTab === 'create' ? (
-                <CreateMessage />
+                <CreateMessage wallet={wallet} />
               ) : (
-                <ReadMessage />
+                <ReadMessage wallet={wallet} />
               )}
             </div>
           </div>

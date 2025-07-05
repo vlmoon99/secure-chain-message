@@ -1,25 +1,58 @@
 import React, { useState } from 'react';
 import { Send, Copy, Check, Shield, Hash } from 'lucide-react';
-import type { User } from '../types';
+import { NearWallet } from '@hot-labs/near-connect';
+import {
+    // decrypt_message,
+    encrypt_message,
+    generate_keypair,
+    KeyPair,
+} from "../encryption/cryptography_project.js";
+
+interface CreateMessageProps {
+  wallet: NearWallet | null;
+}
 
 
-export const CreateMessage: React.FC = () => {
+export const CreateMessage: React.FC<CreateMessageProps> = ({wallet}) => {
   const [message, setMessage] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   const [result, setResult] = useState<{
-    messageId: string;
-    encodedCode: string;
+    key: string;
+    encodedText: string;
     transactionHash: string;
   } | null>(null);
   const [copied, setCopied] = useState(false);
 
   const handleCreateMessage = async () => {
     if (!message.trim()) return;
-
     setIsCreating(true);
+    let keyPair: KeyPair = generate_keypair();
+    let encryptedMessage = encrypt_message(keyPair.public_key, message);
     try {
-      setResult(null);
-      setMessage('');
+     let res = await wallet?.signAndSendTransactions({
+          transactions: [
+            {
+              receiverId: "securechainmsg.near",
+              actions: [
+                {
+                  type: "FunctionCall",
+                  params: {
+                    methodName: "CreateMsg",
+                    args: { key: keyPair.public_key ,msg: encryptedMessage },
+                    gas: "30000000000000",
+                    deposit: "00000000000001",
+                  },
+                },
+              ],
+            },
+          ],
+        });
+      if(res){
+      let hash = res[0].transaction.hash;
+      setResult({key :keyPair.public_key,encodedText :encryptedMessage,transactionHash : hash});
+      } else {
+        throw new Error("Transaction failed, there are no tx hash");
+      }
     } catch (error) {
       console.error('Failed to create message:', error);
     } finally {
@@ -29,7 +62,7 @@ export const CreateMessage: React.FC = () => {
 
   const handleCopyCode = async () => {
     if (result) {
-      await navigator.clipboard.writeText(result.encodedCode);
+      await navigator.clipboard.writeText(result.encodedText);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
@@ -57,7 +90,7 @@ export const CreateMessage: React.FC = () => {
               <Hash className="h-4 w-4 text-blue-400" />
               <span className="text-sm font-medium text-gray-300">Message ID</span>
             </div>
-            <code className="text-xs text-gray-400 font-mono break-all">{result.messageId}</code>
+            <code className="text-xs text-gray-400 font-mono break-all">{result.key}</code>
           </div>
 
           <div className="bg-gray-900/50 rounded-lg p-4">
@@ -80,7 +113,7 @@ export const CreateMessage: React.FC = () => {
               </button>
             </div>
             <code className="text-sm text-blue-200 font-mono break-all bg-gray-900/50 p-3 rounded block">
-              {result.encodedCode}
+              {result.encodedText}
             </code>
           </div>
         </div>

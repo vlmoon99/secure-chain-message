@@ -7,28 +7,30 @@ import "@hot-labs/near-connect/modal-ui.css";
 interface WalletConnectionProps {
   user: User | null;
   onUserChange: (user: User | null) => void;
+  wallet: NearWallet | null;
+  onWalletChange: (user: NearWallet | null) => void;
+
 }
 
-const selector = new WalletSelector({ network: "testnet" });
+const selector = new WalletSelector({ network: "mainnet" });
 const modal = new WalletSelectorUI(selector);
 
-export const WalletConnection: React.FC<WalletConnectionProps> = ({ user, onUserChange }) => {
-  const [wallet, setWallet] = useState<NearWallet>();
+export const WalletConnection: React.FC<WalletConnectionProps> = ({ user, onUserChange, wallet, onWalletChange }) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     selector.on("wallet:signIn", async (t) => {
       const w = await selector.wallet();
-      setWallet(w);
+      onWalletChange(w);
       onUserChange({ accountId: t.accounts[0].accountId, isConnected: true });
     });
     selector.on("wallet:signOut", () => {
-      setWallet(undefined);
+      onWalletChange(null);
       onUserChange(null);
     });
     selector.wallet().then((wallet) => {
       wallet.getAccounts().then((t) => {
-        setWallet(wallet);
+        onWalletChange(wallet);
         onUserChange({ accountId: t[0].accountId, isConnected: true });
       });
     });

@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { Eye, Lock, Calendar, User as UserIcon } from 'lucide-react';
+import { NearWallet } from '@hot-labs/near-connect';
 
-export const ReadMessage: React.FC = () => {
+interface ReadMessageProps {
+  wallet: NearWallet | null;
+}
+
+export const ReadMessage: React.FC<ReadMessageProps> = ({wallet}) => {
   const [code, setCode] = useState('');
   const [isReading, setIsReading] = useState(false);
   const [result, setResult] = useState<{
