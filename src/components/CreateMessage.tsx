@@ -101,14 +101,15 @@ export const CreateMessage: React.FC<CreateMessageProps> = ({wallet}) => {
           <div className="bg-gray-900/50 rounded-lg p-4">
             <div className="flex items-center space-x-2 mb-2">
               <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium text-gray-300">Message ID</span>
-              <button
-                onClick={() => handleCopy(result.key, 'messageId')}
-                className="flex items-center space-x-1 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors"
-              >
-                {copiedStates.messageId ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                <span>{copiedStates.messageId ? 'Copied!' : 'Copy'}</span>
-              </button>
+                <span className="text-sm font-medium text-gray-300">Message ID</span>
+                <button
+                  onClick={() => handleCopy(result.key, 'messageId')}
+                  className="flex items-center space-x-1 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors"
+                >
+                  {copiedStates.messageId ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  <span>{copiedStates.messageId ? 'Copied!' : 'Copy'}</span>
+                </button>
+              </div>
             </div>
             <code className="text-xs text-gray-400 font-mono break-all">{result.key}</code>
           </div>
@@ -116,14 +117,15 @@ export const CreateMessage: React.FC<CreateMessageProps> = ({wallet}) => {
           <div className="bg-gray-900/50 rounded-lg p-4">
             <div className="flex items-center space-x-2 mb-2">
               <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium text-gray-300">Transaction Hash</span>
-              <button
-                onClick={() => handleCopy(result.transactionHash, 'transactionHash')}
-                className="flex items-center space-x-1 px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors"
-              >
-                {copiedStates.transactionHash ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                <span>{copiedStates.transactionHash ? 'Copied!' : 'Copy'}</span>
-              </button>
+                <span className="text-sm font-medium text-gray-300">Transaction Hash</span>
+                <button
+                  onClick={() => handleCopy(result.transactionHash, 'transactionHash')}
+                  className="flex items-center space-x-1 px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors"
+                >
+                  {copiedStates.transactionHash ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  <span>{copiedStates.transactionHash ? 'Copied!' : 'Copy'}</span>
+                </button>
+              </div>
             </div>
             <code className="text-xs text-gray-400 font-mono break-all">{result.transactionHash}</code>
           </div>
