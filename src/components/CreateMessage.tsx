@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Send, Copy, Check, Shield, BedSingle } from 'lucide-react';
+import { Send, Copy, Check, Shield } from 'lucide-react';
 import { NearWallet } from '@hot-labs/near-connect';
 import { encrypt_message, generate_keypair, KeyPair } from "../encryption/cryptography_project.js";
 import bs58 from 'bs58';

@@ -5,7 +5,6 @@ import (
 
 	"github.com/vlmoon99/near-sdk-go/collections"
 	contractBuilder "github.com/vlmoon99/near-sdk-go/contract"
-	"github.com/vlmoon99/near-sdk-go/env"
 )
 
 var (
@@ -61,7 +60,7 @@ func CreateMsg() {
 		}
 
 		contract := GetContract().(*SecureChainMessageContract)
-		env.LogString("Creating message with key: " + key + " and message: " + msg)
+
 		if err := contract.state.messages.Insert(key, msg); err != nil {
 			return err
 		}
@@ -85,7 +84,6 @@ func GetMsg() {
 		if err != nil {
 			msg = "Error getting message: " + err.Error()
 		}
-		env.LogString("Retrieving message with key: " + key + " - Message: " + msg)
 
 		contractBuilder.ReturnValue(msg)
 		return nil

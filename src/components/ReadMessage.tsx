@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Eye, Lock, Calendar, User as UserIcon } from 'lucide-react';
+import { Eye, Lock } from 'lucide-react';
 import { NearWallet } from '@hot-labs/near-connect';
-import { decodeBase64, encodeUTF8 } from 'tweetnacl-util';
 import { decrypt_message } from "../encryption/cryptography_project.js";
 import bs58 from 'bs58';
 
