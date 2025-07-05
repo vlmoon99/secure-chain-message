@@ -19,32 +19,34 @@ function App() {
       
       <div className="relative z-10">
         {/* Header */}
-        <header className="border-b border-gray-800/50 backdrop-blur-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div className="flex items-center justify-between">
+        <header className="border-b border-gray-800/50 backdrop-blur-sm sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-3 sm:py-4">
+            <div className="flex items-center justify-between flex-wrap gap-3">
               <div className="flex items-center space-x-3">
-                <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
-                  <Shield className="h-6 w-6 text-white" />
+                <div className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+                  <Shield className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold text-white">SecureChain Messages</h1>
-                  <p className="text-xs text-gray-400">Blockchain-based secure messaging</p>
+                  <h1 className="text-lg sm:text-xl font-bold text-white">SecureChain Messages</h1>
+                  <p className="text-xs text-gray-400 hidden sm:block">Blockchain-based secure messaging</p>
                 </div>
               </div>
-              <WalletConnection user={user} onUserChange={setUser} wallet={wallet} onWalletChange={setWallet} />
+              <div className="flex-shrink-0">
+                <WalletConnection user={user} onUserChange={setUser} wallet={wallet} onWalletChange={setWallet} />
+              </div>
             </div>
           </div>
         </header>
 
         {/* Main Content */}
-        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="space-y-8">
+        <main className="max-w-4xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
+          <div className="space-y-4 sm:space-y-6 lg:space-y-8">
             {/* Tab Navigation */}
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-2 border border-gray-700">
-              <div className="flex space-x-2">
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl sm:rounded-2xl p-1.5 sm:p-2 border border-gray-700">
+              <div className="flex space-x-1 sm:space-x-2">
                 <button
                   onClick={() => setActiveTab('create')}
-                  className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
+                  className={`flex-1 py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base ${
                     activeTab === 'create'
                       ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
                       : 'text-gray-300 hover:text-white hover:bg-gray-700/50'
@@ -54,7 +56,7 @@ function App() {
                 </button>
                 <button
                   onClick={() => setActiveTab('read')}
-                  className={`flex-1 py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
+                  className={`flex-1 py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base ${
                     activeTab === 'read'
                       ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg'
                       : 'text-gray-300 hover:text-white hover:bg-gray-700/50'
@@ -66,7 +68,7 @@ function App() {
             </div>
 
             {/* Tab Content */}
-            <div className="min-h-[400px]">
+            <div className="min-h-[300px] sm:min-h-[400px]">
               {activeTab === 'create' ? (
                 <CreateMessage wallet={wallet} />
               ) : (
@@ -77,8 +79,8 @@ function App() {
         </main>
 
         {/* Footer */}
-        <footer className="border-t border-gray-800/50 mt-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <footer className="border-t border-gray-800/50 mt-8 sm:mt-12 lg:mt-16">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-6 sm:py-8">
             <div className="flex flex-col md:flex-row items-center justify-between">
               <div className="flex items-center space-x-2 mb-4 md:mb-0">
                 <Shield className="h-5 w-5 text-blue-400" />

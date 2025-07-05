@@ -51,22 +51,22 @@ export const WalletConnection: React.FC<WalletConnectionProps> = ({ user, onUser
 
   if (user) {
     return (
-      <div className="flex items-center space-x-4">
-        <div className="flex items-center space-x-2 bg-gray-800/50 px-4 py-2 rounded-lg border border-gray-700">
+      <div className="flex items-center space-x-2 sm:space-x-4 flex-wrap gap-2">
+        <div className="flex items-center space-x-2 bg-gray-800/50 px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg border border-gray-700">
           <UserIcon className="h-4 w-4 text-blue-400" />
-          <span className="text-sm font-medium text-white">{user.accountId}</span>
+          <span className="text-xs sm:text-sm font-medium text-white truncate max-w-[120px] sm:max-w-none">{user.accountId}</span>
         </div>
         <button
           onClick={disconnect}
           disabled={loading}
-          className="flex items-center space-x-2 px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-red-800 disabled:cursor-not-allowed text-white rounded-lg font-medium"
+          className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-4 py-1.5 sm:py-2 bg-red-600 hover:bg-red-700 disabled:bg-red-800 disabled:cursor-not-allowed text-white rounded-lg font-medium text-xs sm:text-sm"
         >
           {loading ? (
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
           ) : (
             <LogOut className="h-4 w-4" />
           )}
-          <span>{loading ? "Disconnecting..." : "Disconnect"}</span>
+          <span className="hidden sm:inline">{loading ? "Disconnecting..." : "Disconnect"}</span>
         </button>
       </div>
     );
@@ -76,12 +76,12 @@ export const WalletConnection: React.FC<WalletConnectionProps> = ({ user, onUser
     <button
       onClick={connect}
       disabled={loading}
-      className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-blue-800 disabled:to-purple-800 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-all duration-200"
+      className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-blue-800 disabled:to-purple-800 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-all duration-200 text-xs sm:text-sm"
     >
       {loading ? (
-        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
+        <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-b-2 border-white" />
       ) : (
-        <Wallet className="h-5 w-5" />
+        <Wallet className="h-4 w-4 sm:h-5 sm:w-5" />
       )}
       <span>{loading ? "Connecting..." : "Connect Wallet"}</span>
     </button>
