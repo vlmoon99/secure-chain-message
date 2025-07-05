@@ -21,7 +21,15 @@ export const CreateMessage: React.FC<CreateMessageProps> = ({wallet}) => {
     encodedText: string;
     transactionHash: string;
   } | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [copiedStates, setCopiedStates] = useState<{
+    messageId: boolean;
+    transactionHash: boolean;
+    decryptionCode: boolean;
+  }>({
+    messageId: false,
+    transactionHash: false,
+    decryptionCode: false,
+  });
 
   const handleCreateMessage = async () => {
     if (!message.trim()) return;
@@ -60,17 +68,22 @@ export const CreateMessage: React.FC<CreateMessageProps> = ({wallet}) => {
     }
   };
 
-  const handleCopyCode = async () => {
-    if (result) {
-      await navigator.clipboard.writeText(result.encodedText);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
+  const handleCopy = async (text: string, type: 'messageId' | 'transactionHash' | 'decryptionCode') => {
+    await navigator.clipboard.writeText(text);
+    setCopiedStates(prev => ({ ...prev, [type]: true }));
+    setTimeout(() => {
+      setCopiedStates(prev => ({ ...prev, [type]: false }));
+    }, 2000);
   };
 
   const handleNewMessage = () => {
     setResult(null);
     setMessage('');
+    setCopiedStates({
+      messageId: false,
+      transactionHash: false,
+      decryptionCode: false,
+    });
   };
 
   if (result) {
@@ -87,16 +100,30 @@ export const CreateMessage: React.FC<CreateMessageProps> = ({wallet}) => {
         <div className="space-y-4">
           <div className="bg-gray-900/50 rounded-lg p-4">
             <div className="flex items-center space-x-2 mb-2">
-              <Hash className="h-4 w-4 text-blue-400" />
+              <div className="flex items-center space-x-2">
               <span className="text-sm font-medium text-gray-300">Message ID</span>
+              <button
+                onClick={() => handleCopy(result.key, 'messageId')}
+                className="flex items-center space-x-1 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors"
+              >
+                {copiedStates.messageId ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                <span>{copiedStates.messageId ? 'Copied!' : 'Copy'}</span>
+              </button>
             </div>
             <code className="text-xs text-gray-400 font-mono break-all">{result.key}</code>
           </div>
 
           <div className="bg-gray-900/50 rounded-lg p-4">
             <div className="flex items-center space-x-2 mb-2">
-              <Shield className="h-4 w-4 text-purple-400" />
+              <div className="flex items-center space-x-2">
               <span className="text-sm font-medium text-gray-300">Transaction Hash</span>
+              <button
+                onClick={() => handleCopy(result.transactionHash, 'transactionHash')}
+                className="flex items-center space-x-1 px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm transition-colors"
+              >
+                {copiedStates.transactionHash ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                <span>{copiedStates.transactionHash ? 'Copied!' : 'Copy'}</span>
+              </button>
             </div>
             <code className="text-xs text-gray-400 font-mono break-all">{result.transactionHash}</code>
           </div>
@@ -105,11 +132,11 @@ export const CreateMessage: React.FC<CreateMessageProps> = ({wallet}) => {
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-white">Decryption Code</span>
               <button
-                onClick={handleCopyCode}
+                onClick={() => handleCopy(result.encodedText, 'decryptionCode')}
                 className="flex items-center space-x-1 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm transition-colors"
               >
-                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                <span>{copied ? 'Copied!' : 'Copy'}</span>
+                {copiedStates.decryptionCode ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                <span>{copiedStates.decryptionCode ? 'Copied!' : 'Copy'}</span>
               </button>
             </div>
             <code className="text-sm text-blue-200 font-mono break-all bg-gray-900/50 p-3 rounded block">
