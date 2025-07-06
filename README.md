@@ -167,7 +167,14 @@ near-go build
 
 #### Step 4: Create and Import Your NEAR Account
 
-1. Go to [Meteor Wallet](https://wallet.meteorwallet.app/add_wallet/create_new) and create a testnet or mainnet account.
+1. Go to [Meteor Wallet](https://wallet.meteorwallet.app/add_wallet/create_new) and create a testnet or mainnet account. After creation go to the Settings-> Security and Recovery and copy your mnemonic (12 words).
+
+<img src="readme_images/create_wallet_1.png" alt="Create Wallet 1" width="800"/>
+
+<img src="readme_images/create_wallet_2.png" alt="Create Wallet 2" width="800"/>
+
+<img src="readme_images/create_wallet_3.png" alt="Create Wallet 3" width="800"/>
+
 2. Import your account into the CLI:
 
 ```bash
@@ -175,6 +182,9 @@ near-go account import
 ```
 
 Follow the prompts to enter your seed phrase and account details.
+
+<img src="readme_images/account_import.png" alt="Import Account" width="800"/>
+
 
 #### Step 5: Deploy the Smart Contract
 
@@ -254,6 +264,8 @@ const disconnect = async () => {
 
 After connecting, you can use the wallet to interact with your smart contract.
 
+<img src="readme_images/connect_wallet.png" alt="Connect Wallet" width="800"/>
+
 ---
 
 #### Step 3: Creating a Secure Message
@@ -300,6 +312,11 @@ const handleCreateMessage = async () => {
 Here, your message is encrypted using your cryptography project, then sent to the blockchain.  
 After creation, you get an encoded string containing both the public and private key.  
 **Save this code**—you'll need it to read the message later or share it with others.
+
+<img src="readme_images/write_message.png" alt="Write Message" width="800"/>
+
+<img src="readme_images/see_the_code_for_reding.png" alt="Write Message" width="800"/>
+
 
 ---
 
@@ -359,6 +376,10 @@ const handleReadMessage = async () => {
 1. Decode the code to get the public and private keys.
 2. Use the public key to fetch the encrypted message from the blockchain.
 3. Decrypt the message with the private key and display it.
+
+<img src="readme_images/read_message_1.png" alt="Read Message 1" width="800"/>
+
+<img src="readme_images/read_message_2.png" alt="Write Message 2" width="800"/>
 
 ---
 
