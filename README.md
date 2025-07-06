@@ -1,156 +1,372 @@
-secure-chain-message
+# secure-chain-message
 
-Tutorial :
+## Tutorial
 
-1.Intro
+### 1. Introduction
 
-This tutorial will show u how to use Near Blokchain, how to build smart contracts using Golang. Also this tutorial will explain briefly about WEB3 technology, and how build on Near Blockchain.
+This tutorial will show you how to use the NEAR Blockchain and build smart contracts using Golang. It also briefly explains WEB3 technology and how to build on NEAR.
 
-In order to speed up our dev process u will need to install near-go CLI tool , which will provided to u 1.fast samrt contract project creation, 2.building smart contract, 3.testing smart contract , 4.deploying smart contract, 5.Call smart contract function , 6.import your near account into cli .
+To speed up development, install the near-go CLI tool. This tool lets you quickly create, build, test, and deploy smart contracts, call contract functions, and import your NEAR account into the CLI.
 
 ```bash
 curl -LO https://github.com/vlmoon99/near-cli-go/releases/latest/download/install.sh && bash install.sh && rm install.sh
 ```
-Check your instalation using near-go help cmd in the terminal.
 
-After u installed near-go CLI - u alredy be able ro reproduce all files which is inside https://github.com/vlmoon99/secure-chain-message .
-
-
-2.Smart Contract creation
-
-For smart contract folder creation use :
+Check your installation with:
 
 ```bash
-near-go create -p "test1" -m "test1" -t "smart-contract-empty"
+near-go help
 ```
 
-Where -p - project , -m - go module , -t - type of the project template.
+After installing near-go CLI, you can reproduce all files from [this repo](https://github.com/vlmoon99/secure-chain-message).
 
-In case of this app  our command will looks like :
+---
+
+### 2. Smart Contract Creation
+
+#### Step 1: Create a New Smart Contract Project
+
+Run the following command to create a new smart contract folder:
 
 ```bash
 near-go create -p "secure-chain-message" -m "secure-chain-message" -t "smart-contract-empty"
 ```
 
-After execution we will have our samrt contract inside main.go :
+Where:
+- `-p` is the project name
+- `-m` is the Go module name
+- `-t` is the project template
+
+After running the command, your contract files will be in the `contract` directory:
 
 ```bash
 secure-chain-message/contract$ ls
 go.mod  go.sum  main.go
 ```
 
-It's higly recomded to read main.go before u will delete all this code, inside main.go I created the template which can introduce u into Near Blockchain functiality quielcky + show how it work on the low level, this tempalte will show u how u can work with Write/Read Data , Accept Payments, Read incomming Transaction data contex (how much deposit user is attached, how much gases is used, which input user gave to u and which type , your client public key , and another helpful things).
+**Tip:**  
+Before deleting or changing anything, read through `main.go`. The template introduces NEAR Blockchain features, such as working with data, payments, and transaction context.
 
-After u read main.go - delete all code and paste this code :
+#### Step 2: Replace the Contract Code
+
+Replace the contents of `main.go` with the following code:
 
 ```go
 package main
 
 import (
-	"sync"
+    "sync"
 
-	"github.com/vlmoon99/near-sdk-go/collections"
-	contractBuilder "github.com/vlmoon99/near-sdk-go/contract"
-	"github.com/vlmoon99/near-sdk-go/json"
+    "github.com/vlmoon99/near-sdk-go/collections"
+    contractBuilder "github.com/vlmoon99/near-sdk-go/contract"
+    "github.com/vlmoon99/near-sdk-go/json"
 )
 
 var (
-	contractInstance interface{}
-	contractOnce     sync.Once
+    contractInstance interface{}
+    contractOnce     sync.Once
 )
 
 type SecureChainMessageState struct {
-	messages *collections.UnorderedMap[string, string]
+    messages *collections.UnorderedMap[string, string]
 }
 
 func NewSecureChainMessageState() *SecureChainMessageState {
-	return &SecureChainMessageState{
-		messages: collections.NewUnorderedMap[string, string]("secure_chain_msg"),
-	}
+    return &SecureChainMessageState{
+        messages: collections.NewUnorderedMap[string, string]("secure_chain_msg"),
+    }
 }
 
 type SecureChainMessageContract struct {
-	state *SecureChainMessageState
+    state *SecureChainMessageState
 }
 
 func NewSecureChainMessageContract() *SecureChainMessageContract {
-	return &SecureChainMessageContract{
-		state: NewSecureChainMessageState(),
-	}
+    return &SecureChainMessageContract{
+        state: NewSecureChainMessageState(),
+    }
 }
 
 func GetContract() interface{} {
-	contractOnce.Do(func() {
-		if contractInstance == nil {
-			contractInstance = NewSecureChainMessageContract()
-		}
-	})
-	return contractInstance
+    contractOnce.Do(func() {
+        if contractInstance == nil {
+            contractInstance = NewSecureChainMessageContract()
+        }
+    })
+    return contractInstance
 }
 
 const (
-	KeyInput     = "key"
-	MessageInput = "msg"
+    KeyInput     = "key"
+    MessageInput = "msg"
 )
 
 //go:export CreateMsg
 func CreateMsg() {
-	contractBuilder.HandleClientJSONInput(func(input *contractBuilder.ContractInput) error {
-		msg, err := input.JSON.GetString(MessageInput)
-		if err != nil {
-			return err
-		}
+    contractBuilder.HandleClientJSONInput(func(input *contractBuilder.ContractInput) error {
+        msg, err := input.JSON.GetString(MessageInput)
+        if err != nil {
+            return err
+        }
 
-		key, err := input.JSON.GetString(KeyInput)
-		if err != nil {
-			return err
-		}
+        key, err := input.JSON.GetString(KeyInput)
+        if err != nil {
+            return err
+        }
 
-		contract := GetContract().(*SecureChainMessageContract)
+        contract := GetContract().(*SecureChainMessageContract)
 
-		if err := contract.state.messages.Insert(key, msg); err != nil {
-			return err
-		}
+        if err := contract.state.messages.Insert(key, msg); err != nil {
+            return err
+        }
 
-		contractBuilder.ReturnValue("Msg was created successfully")
-		return nil
-	})
+        contractBuilder.ReturnValue("Msg was created successfully")
+        return nil
+    })
 }
 
 //go:export GetMsg
 func GetMsg() {
-	contractBuilder.HandleClientJSONInput(func(input *contractBuilder.ContractInput) error {
-		key, err := input.JSON.GetString(KeyInput)
-		if err != nil {
-			return err
-		}
+    contractBuilder.HandleClientJSONInput(func(input *contractBuilder.ContractInput) error {
+        key, err := input.JSON.GetString(KeyInput)
+        if err != nil {
+            return err
+        }
 
-		contract := GetContract().(*SecureChainMessageContract)
+        contract := GetContract().(*SecureChainMessageContract)
 
-		msg, err := contract.state.messages.Get(key)
-		if err != nil {
-			msg = "Error getting message: " + err.Error()
-		}
+        msg, err := contract.state.messages.Get(key)
+        if err != nil {
+            msg = "Error getting message: " + err.Error()
+        }
 
-		builder := json.NewBuilder()
-		builder.AddString("result", msg)
+        builder := json.NewBuilder()
+        builder.AddString("result", msg)
 
-		contractBuilder.ReturnValue(builder.Build())
+        contractBuilder.ReturnValue(builder.Build())
 
-		return nil
-	})
+        return nil
+    })
 }
 ```
 
-This code wiil be store on the blockchain, all functions with "//go:export" compiler directive will be exposed to your clients. It's not recommendede to save state inside variables insdie your code , for all state which u wanna saved into blockchain it's highly recomenede to use import : "github.com/vlmoon99/near-sdk-go/collections" and all collections from there , or use low-level method using import "github.com/vlmoon99/near-sdk-go/env" and env.StorageRead/env.StorageWrite functions . All this methods will provides u an option to write data on chain, each 100kb cost 1 NEAR token (Ⓝ) ~ 2$ .
+This contract stores encrypted messages on the blockchain, using the sender's public key as the identifier. Only someone with the correct private key can decrypt the message.  
+**Note:** The contract itself does not perform encryption or decryption—this is handled on the client side.
 
-In order to handle user input/output in the easeiest way - u need to use import - contractBuilder "github.com/vlmoon99/near-sdk-go/contract" ,  using HandleClientJSONInput - u can handle user inut in json format , automaticly parse it , and get the nessesary data insdie your code , after u proceed the information read nad write data  - u can send the return data to the user using contractBuilder.ReturnValue , this function will take your output, convert it into bytes using "github.com/vlmoon99/near-sdk-go/borsh" pacakge and send it to the client.
+- All functions with `//go:export` are available to call from your app.
+- Always use collections from `github.com/vlmoon99/near-sdk-go/collections` or low-level storage for persistent data.
+- Each 100kb of storage costs about 1 NEAR (~$2).
 
-3.Client creation 
+#### Step 3: Build the Smart Contract
 
-Tell how use wallet selector from hot dao , sign and send tx .
+To build your smart contract, run:
 
-4.Additonal thoughts , resources to read, topic to discover
+```bash
+near-go build
+```
 
-Give links to the Near docs, create some type of the roadmap for interested person, give links on the sdk's,
-group for the developers, for the client , etc ...
+#### Step 4: Create and Import Your NEAR Account
+
+1. Go to [Meteor Wallet](https://wallet.meteorwallet.app/add_wallet/create_new) and create a testnet or mainnet account.
+2. Import your account into the CLI:
+
+```bash
+near-go account import
+```
+
+Follow the prompts to enter your seed phrase and account details.
+
+#### Step 5: Deploy the Smart Contract
+
+Deploy your contract to testnet or mainnet:
+
+```bash
+near-go deploy -id "your-created-account.testnet" -n "testnet"
+# or for mainnet
+near-go deploy -id "your-created-account.near" -n "mainnet"
+```
+
+After deployment, you will see a transaction hash in the console.  
+You can use this hash to view transaction details on [NEAR Explorer (mainnet)](https://nearblocks.io/) or [NEAR Explorer (testnet)](https://testnet.nearblocks.io/).  
+These explorers show all transaction details, gas costs, and more.
+
+---
+
+### 3. Client Creation
+
+The client is a React app.
+
+#### Step 1: Install Dependencies
+
+Install the required package:
+
+```bash
+yarn add @hot-labs/near-connect
+# or
+npm i @hot-labs/near-connect
+```
+
+This package lets you log in/out of NEAR, and sign/send transactions.
+
+---
+
+#### Step 2: Wallet Connection
+
+Example logic for connecting a wallet:
+
+```js
+const selector = new WalletSelector({ network: "mainnet" }); 
+const modal = new WalletSelectorUI(selector);
+
+const [loading, setLoading] = useState(false);
+
+useEffect(() => {
+  selector.on("wallet:signIn", async (t) => {
+    const w = await selector.wallet();
+    onWalletChange(w);
+    onUserChange({ accountId: t.accounts[0].accountId, isConnected: true });
+  });
+  selector.on("wallet:signOut", () => {
+    onWalletChange(null);
+    onUserChange(null);
+  });
+  selector.wallet().then((wallet) => {
+    wallet.getAccounts().then((t) => {
+      onWalletChange(wallet);
+      onUserChange({ accountId: t[0].accountId, isConnected: true });
+    });
+  });
+}, []);
+
+const connect = async () => {
+  setLoading(true);
+  if (wallet) await selector.disconnect();
+  else await modal.open();
+  setLoading(false);
+};
+
+const disconnect = async () => {
+  setLoading(true);
+  await selector.disconnect();
+  setLoading(false);
+};
+```
+
+After connecting, you can use the wallet to interact with your smart contract.
+
+---
+
+#### Step 3: Creating a Secure Message
+
+```js
+const [message, setMessage] = useState('');
+const [isCreating, setIsCreating] = useState(false);
+const [result, setResult] = useState<{ encodedText: string; transactionHash: string } | null>(null);
+
+const handleCreateMessage = async () => {
+  if (!message.trim() || !wallet) return;
+  setIsCreating(true);
+  try {
+    const keyPair: KeyPair = generate_keypair();
+    const encrypted = encrypt_message(keyPair.public_key, message);
+    const res = await wallet.signAndSendTransactions({
+      transactions: [{
+        receiverId: "securechainmsg.near",
+        actions: [{
+          type: "FunctionCall",
+          params: {
+            methodName: "CreateMsg",
+            args: { key: keyPair.public_key, msg: encrypted },
+            gas: "30000000000000",
+            deposit: "1",
+          },
+        }],
+      }],
+    });
+    if (res) {
+      const data = JSON.stringify({ public_key: keyPair.public_key, private_key: keyPair.private_key });
+      let msgEncoded = bs58.encode(new TextEncoder().encode(data));
+      setResult({
+        encodedText: msgEncoded,
+        transactionHash: res[0].transaction.hash,
+      });
+    }
+  } finally {
+    setIsCreating(false);
+  }
+};
+```
+
+Here, your message is encrypted using your cryptography project, then sent to the blockchain.  
+After creation, you get an encoded string containing both the public and private key.  
+**Save this code**—you'll need it to read the message later or share it with others.
+
+---
+
+#### Step 4: Reading a Secure Message
+
+```js
+const [code, setCode] = useState('');
+const [isReading, setIsReading] = useState(false);
+const [result, setResult] = useState<string | null>(null);
+const [error, setError] = useState<string | null>(null);
+
+const handleReadMessage = async () => {
+  if (!code.trim()) return;
+
+  setIsReading(true);
+  setError(null);
+  const json = new TextDecoder().decode(bs58.decode(code));
+  let { public_key, private_key } = JSON.parse(json);
+
+  if (!public_key || !private_key) {
+    setError('Invalid decryption code format');
+    setIsReading(false);
+    return;
+  }
+
+  try {
+    const res = await wallet?.signAndSendTransactions({
+      transactions: [{
+        receiverId: "securechainmsg.near",
+        actions: [{
+          type: "FunctionCall",
+          params: {
+            methodName: "GetMsg",
+            args: { key: public_key },
+            gas: "30000000000000",
+            deposit: "1",
+          },
+        }],
+      }],
+    });
+
+    if (res) {
+      let base64Msg = res[0].status.SuccessValue;
+      let json = JSON.parse(atob(base64Msg));
+      let decryptedResult = decrypt_message(private_key, json.result);
+      setResult(decryptedResult);
+    }
+  } catch (err) {
+    setError((err as Error).message);
+  } finally {
+    setIsReading(false);
+  }
+};
+```
+
+**How it works:**  
+1. Decode the code to get the public and private keys.
+2. Use the public key to fetch the encrypted message from the blockchain.
+3. Decrypt the message with the private key and display it.
+
+---
+
+### 4. Additional Resources
+
+- [near-sdk-go](https://github.com/vlmoon99/near-sdk-go)
+- [near-cli-go](https://github.com/vlmoon99/near-cli-go)
+- [NEAR Go Smart Contracts Quickstart](https://docs.near.org/smart-contracts/quickstart?code-tabs=go)
+- [NEAR Protocol Basics](https://docs.near.org/protocol/basics)
+- [NEAR Account Model](https://docs.near.org/protocol/account-model)
+- [NEAR Transactions](https://docs.near.org/protocol/transactions)

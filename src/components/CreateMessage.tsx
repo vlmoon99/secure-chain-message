@@ -29,7 +29,7 @@ export const CreateMessage: React.FC<CreateMessageProps> = ({ wallet }) => {
               methodName: "CreateMsg",
               args: { key: keyPair.public_key, msg: encrypted },
               gas: "30000000000000",
-              deposit: "00000000000001",
+              deposit: "1",
             },
           }],
         }],

@@ -39,7 +39,7 @@ export const ReadMessage: React.FC<ReadMessageProps> = ({wallet}) => {
               methodName: "GetMsg",
               args: { key: public_key},
               gas: "30000000000000",
-              deposit: "00000000000001",
+              deposit: "1",
             },
           }],
         }],
