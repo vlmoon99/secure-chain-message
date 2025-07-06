@@ -5,6 +5,7 @@ import (
 
 	"github.com/vlmoon99/near-sdk-go/collections"
 	contractBuilder "github.com/vlmoon99/near-sdk-go/contract"
+	"github.com/vlmoon99/near-sdk-go/json"
 )
 
 var (
@@ -85,7 +86,11 @@ func GetMsg() {
 			msg = "Error getting message: " + err.Error()
 		}
 
-		contractBuilder.ReturnValue(msg)
+		builder := json.NewBuilder()
+		builder.AddString("result", msg)
+
+		contractBuilder.ReturnValue(builder.Build())
+
 		return nil
 	})
 }

@@ -28,8 +28,6 @@ export const ReadMessage: React.FC<ReadMessageProps> = ({wallet}) => {
       setIsReading(false);
       return;
     }
-    console.log("Public Key:", public_key);
-    console.log("Private Key:", private_key);
 
     try {
       const res = await wallet?.signAndSendTransactions({
@@ -47,12 +45,10 @@ export const ReadMessage: React.FC<ReadMessageProps> = ({wallet}) => {
         }],
         });
         
-        console.log(res);
-
         if(res){
           let base64Msg = res[0].status.SuccessValue;
-          let binaryStr = atob(base64Msg).slice(4);
-          let decryptedResult = decrypt_message(private_key, binaryStr);
+          let json = JSON.parse(atob(base64Msg));
+          let decryptedResult = decrypt_message(private_key, json.result);
           setResult(decryptedResult);
       }
     } catch (err) {
